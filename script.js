@@ -1,4 +1,52 @@
-let entregas = JSON.parse(localStorage.getItem('planfeto_db')) || [];
+let entregaPendenteId = null; // Guarda qual entrega está sendo finalizada
+
+// 1. Abre o modal quando clica no botão verde "Entregar" da tabela
+function marcarEntregue(id) {
+    entregaPendenteId = id; // Salva o ID da entrega selecionada
+    document.getElementById('modalFoto').classList.remove('hidden');
+}
+
+// 2. Fecha o modal se desistir
+function fecharModal() {
+    document.getElementById('modalFoto').classList.add('hidden');
+    document.getElementById('fotoEntrega').value = "";
+    entregaPendenteId = null;
+}
+
+// 3. Processa a foto e finaliza a entrega
+async function confirmarEntregaComFoto() {
+    const fotoInput = document.getElementById('fotoEntrega');
+    
+    if (!fotoInput.files || !fotoInput.files[0]) {
+        alert("Senhor Marcelo, é obrigatório tirar a foto para comprovar a entrega!");
+        return;
+    }
+
+    const file = fotoInput.files[0];
+    const fotoBase64 = await toBase64(file);
+
+    // Localiza a entrega no array e atualiza
+    const index = entregas.findIndex(e => e.id === entregaPendenteId);
+    if (index !== -1) {
+        entregas[index].status = "Entregue";
+        entregas[index].foto = fotoBase64; // A foto entra AQUI agora
+        
+        localStorage.setItem('planfeto_db', JSON.stringify(entregas));
+        
+        alert("Entrega concluída com sucesso!");
+        fecharModal();
+        renderizarTabela();
+        atualizarDashboard();
+    }
+}
+
+// Função auxiliar para converter imagem
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+});
 let map;
 
 function login() {
