@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planfeto</title>
+    <title>Planfeto - Sistema de Entregas</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
     <div id="login" class="login">
         <h1>PLANFETO</h1>
-        <input id="user" placeholder="Usuário">
-        <input id="pass" type="password" placeholder="Senha">
+        <input id="user" placeholder="Usuário (admin)">
+        <input id="pass" type="password" placeholder="Senha (123)">
         <button onclick="login()">Entrar</button>
     </div>
 
     <div id="app" class="hidden">
-        
         <aside>
-            <div class="logo-container">
-                <img src="logo.png" alt="Logo Planfeto" class="logo-img">
-                <h2>Planfeto</h2>
-            </div>
-
+            <h2>Planfeto</h2>
             <button onclick="showPage('dashboard')">Dashboard</button>
             <button onclick="showPage('nova')">Nova Entrega</button>
             <button onclick="showPage('lista')">Entregas</button>
@@ -51,21 +45,18 @@
 
             <section id="nova" class="hidden">
                 <h2>Nova Entrega</h2>
-                <input id="cliente" placeholder="Cliente">
-                <input id="endereco" placeholder="Endereço">
-                
+                <input id="cliente" placeholder="Nome do Cliente">
+                <input id="endereco" placeholder="Endereço Completo">
                 <select id="status">
                     <option value="Pendente">Pendente</option>
                     <option value="Entregue">Entregue</option>
                 </select>
-
-                <button onclick="addEntrega()">Cadastrar</button>
+                <button onclick="addEntrega()">Cadastrar Entrega</button>
             </section>
 
             <section id="lista" class="hidden">
-                <h2>Entregas</h2>
-                <input id="busca" placeholder="Buscar cliente" onkeyup="buscar()">
-
+                <h2>Lista de Entregas</h2>
+                <input id="busca" placeholder="Buscar por cliente..." onkeyup="buscar()">
                 <table>
                     <thead>
                         <tr>
@@ -75,12 +66,10 @@
                             <th>Ação</th>
                         </tr>
                     </thead>
-                    <tbody id="tabela">
-                        </tbody>
+                    <tbody id="tabela"></tbody>
                 </table>
             </section>
         </main>
-
     </div>
 
     <script src="script.js"></script>
