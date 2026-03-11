@@ -140,18 +140,17 @@ function atualizarDashboard() {
 function renderizarTabela() {
     const tabela = document.getElementById('tabela');
     tabela.innerHTML = "";
-    entregas.forEach(e => {
-        const classe = e.status === "Entregue" ? "ok" : "pendente";
-        let btnEntregar = e.status === "Pendente" ? `<button style="background:#22c55e; color:white; border:none; padding:5px; margin-right:5px; border-radius:4px;" onclick="marcarEntregue(${e.id})">Entregar</button>` : "";
-        function renderizarTabela() {
-    const tabela = document.getElementById('tabela');
-    tabela.innerHTML = "";
 
     entregas.forEach(e => {
         const classe = e.status === "Entregue" ? "ok" : "pendente";
         
-        // Link ou Botão para ver a foto (se existir)
-        let btnFoto = e.foto ? `<button style="background:#3b82f6; color:white; border:none; padding:5px; margin-right:5px; border-radius:4px; cursor:pointer;" onclick="verFoto('${e.foto}')">📸</button>` : "";
+        // Se já entregou, mostra botão da foto. Se não, mostra botão de entregar.
+        let acaoPrincipal = "";
+        if (e.status === "Pendente") {
+            acaoPrincipal = `<button style="background:#22c55e; color:white; border:none; padding:8px; margin-right:5px; border-radius:4px; cursor:pointer;" onclick="marcarEntregue(${e.id})">Entregar</button>`;
+        } else if (e.foto) {
+            acaoPrincipal = `<button style="background:#3b82f6; color:white; border:none; padding:8px; margin-right:5px; border-radius:4px; cursor:pointer;" onclick="verFoto('${e.foto}')">Ver Foto 📸</button>`;
+        }
 
         tabela.innerHTML += `
             <tr>
@@ -159,9 +158,8 @@ function renderizarTabela() {
                 <td>${e.endereco}</td>
                 <td class="${classe}">${e.status}</td>
                 <td>
-                    ${btnFoto}
-                    <button style="background:#22c55e; color:white; border:none; padding:5px; margin-right:5px; border-radius:4px;" onclick="marcarEntregue(${e.id})">Entregar</button>
-                    <button style="background:#ef4444; color:white; border:none; padding:5px; border-radius:4px;" onclick="excluir(${e.id})">Excluir</button>
+                    ${acaoPrincipal}
+                    <button style="background:#ef4444; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;" onclick="excluir(${e.id})">Excluir</button>
                 </td>
             </tr>`;
     });
@@ -169,7 +167,7 @@ function renderizarTabela() {
 
 function verFoto(base64) {
     const win = window.open();
-    win.document.write(`<img src="${base64}" style="max-width:100%; height:auto;" />`);
+    win.document.write(`<body style="margin:0; background:#000; display:flex; justify-content:center; align-items:center;"><img src="${base64}" style="max-width:100%; max-height:100vh;" /></body>`);
 }
 
 function marcarEntregue(id) {
