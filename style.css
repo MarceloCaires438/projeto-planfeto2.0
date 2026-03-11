@@ -9,6 +9,26 @@ body{
 background:#1f2933;
 color:#e4e7eb;
 }
+/* Centraliza o Login e garante que ele ocupe a tela toda se não estiver escondido */
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background: #111827; /* Fundo sólido para não ver o sistema atrás */
+    position: fixed;     /* Fixa na tela */
+    top: 0;
+    left: 0;
+    z-index: 999;        /* Garante que fica na frente de tudo */
+}
+
+.login h1 {
+    margin-bottom: 20px;
+    font-size: 3rem;
+    color: #3b82f6;
+}
 
 /* APP LAYOUT */
 
