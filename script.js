@@ -35,6 +35,51 @@ function salvarNoStorage() {
     localStorage.setItem('planfeto_db', JSON.stringify(entregas));
 }
 
+let map; // Variável global para o mapa
+
+function initMap() {
+    // Se o mapa já existir, não cria de novo
+    if (map) return;
+
+    // Coordenadas centrais (Região de Guariba/Taquaritinga)
+    map = L.map('map').setView([-21.3601, -48.4111], 10); 
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Adiciona marcadores para cada entrega que você já cadastrou
+    renderizarPinsNoMapa();
+}
+
+function renderizarPinsNoMapa() {
+    // Limpa marcadores antigos se necessário e adiciona os novos
+    entregas.forEach(entrega => {
+        // Exemplo: Como não temos latitude/longitude real no formulário ainda,
+        // aqui você poderia usar uma API de Geocoding ou fixar pontos de teste.
+        // Vou colocar um marcador de exemplo em Taquaritinga para teste:
+        L.marker([-21.4056, -48.5042]).addTo(map)
+            .bindPopup(`<b>Cliente:</b> ${entrega.cliente}<br><b>Status:</b> ${entrega.status}`);
+    });
+}
+
+// Atualize sua função showPage para carregar o mapa quando clicar no botão
+function showPage(pageId) {
+    const sections = document.querySelectorAll('main section');
+    sections.forEach(s => s.classList.add('hidden'));
+
+    document.getElementById(pageId).classList.remove('hidden');
+
+    if (pageId === 'mapa-rastreio') {
+        setTimeout(() => {
+            initMap();
+            map.invalidateSize(); // Corrige erro de renderização do Leaflet em abas escondidas
+        }, 200);
+    }
+    
+    atualizarDashboard();
+}
+
 // 5. CADASTRAR NOVA ENTREGA
 function addEntrega() {
     const cliente = document.getElementById('cliente').value;
