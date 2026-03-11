@@ -75,33 +75,52 @@ function fecharModal() {
     entregaPendenteId = null;
 }
 
-async function confirmarEntregaComFoto() {
-    const fotoInput = document.getElementById('fotoEntrega');
-    
-    if (!fotoInput.files || !fotoInput.files[0]) {
-        alert("Senhor Marcelo, é obrigatório tirar a foto para comprovar a entrega!");
-        return;
-    }
+function simularEnvioFoto() {
+    const btnEnvia = document.getElementById('btn-envia');
+    const btnCancela = document.getElementById('btn-cancela');
+    const barraArea = document.getElementById('progresso-area');
+    const barra = document.getElementById('barra');
 
-    const file = fotoInput.files[0];
-    
-    // REDIMENSIONAMENTO: Reduz a imagem para não lotar o localStorage
-    const fotoBase64 = await redimensionarImagem(file);
+    // Desativa botões e mostra barra
+    btnEnvia.disabled = true;
+    btnEnvia.innerText = "Enviando...";
+    barraArea.classList.remove('hidden');
 
-    const index = entregas.findIndex(e => e.id === entregaPendenteId);
+    // Simula o carregamento da "foto"
+    let progresso = 0;
+    const intervalo = setInterval(() => {
+        progresso += 20;
+        barra.style.width = progresso + "%";
+
+        if (progresso >= 100) {
+            clearInterval(intervalo);
+            finalizarSimulacao();
+        }
+    }, 400);
+}
+
+function finalizarSimulacao() {
+    const index = entregas.findIndex(ent => ent.id === entregaPendenteId);
     if (index !== -1) {
         entregas[index].status = "Entregue";
-        entregas[index].foto = fotoBase64; 
+        // Colocamos um ícone de foto fake só para preencher o campo
+        entregas[index].foto = "fake-photo-placeholder"; 
         
         localStorage.setItem('planfeto_db', JSON.stringify(entregas));
         
-        alert("Entrega concluída com sucesso!");
+        alert("Foto enviada com sucesso para o sistema Planfeto!");
+        
+        // Reseta o modal para o estado original e fecha
+        document.getElementById('btn-envia').disabled = false;
+        document.getElementById('btn-envia').innerText = "Simular Envio de Foto 📸";
+        document.getElementById('progresso-area').classList.add('hidden');
+        document.getElementById('barra').style.width = "0%";
+        
         fecharModal();
         renderizarTabela();
         atualizarDashboard();
     }
 }
-
 // 6. RENDERIZAÇÃO E DASHBOARD
 function atualizarDashboard() {
     document.getElementById('total').innerText = entregas.length;
