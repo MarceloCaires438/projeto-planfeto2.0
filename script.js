@@ -1,7 +1,13 @@
-// 1. BANCO DE DADOS EM MEMÓRIA
-let entregas = [];
+// 1. BANCO DE DADOS (Agora busca do LocalStorage ao iniciar)
+let entregas = JSON.parse(localStorage.getItem('planfeto_dados')) || [];
 
-// 2. FUNÇÃO DE LOGIN
+// 2. FUNÇÕES DE PERSISTÊNCIA (A Mágica do Salvamento)
+function salvarDados() {
+    // Transforma o array em texto e salva no navegador
+    localStorage.setItem('planfeto_dados', JSON.stringify(entregas));
+}
+
+// 3. FUNÇÃO DE LOGIN
 function login() {
     const usuario = document.getElementById('user').value;
     const senha = document.getElementById('pass').value;
@@ -11,53 +17,71 @@ function login() {
         document.getElementById('app').classList.remove('hidden');
         showPage('dashboard');
     } else {
-        alert("Acesso negado, senhor Marcelo. Verifique o usuário e senha.");
+        alert("Acesso negado, senhor Marcelo.");
     }
 }
 
-// 3. NAVEGAÇÃO ENTRE ABAS
+// 4. NAVEGAÇÃO
 function showPage(pageId) {
     const sections = document.querySelectorAll('main section');
     sections.forEach(s => s.classList.add('hidden'));
 
     document.getElementById(pageId).classList.remove('hidden');
 
-    // Sempre que abrir Dashboard ou Lista, atualizamos os dados visuais
     if (pageId === 'dashboard') atualizarDashboard();
     if (pageId === 'lista') renderizarTabela();
 }
 
-// 4. CADASTRAR NOVA ENTREGA
+// 5. CADASTRAR NOVA ENTREGA
 function addEntrega() {
     const cliente = document.getElementById('cliente').value;
     const endereco = document.getElementById('endereco').value;
     const status = document.getElementById('status').value;
 
     if (cliente === "" || endereco === "") {
-        alert("Por favor, preencha todos os campos da entrega.");
+        alert("Preencha tudo corretamente.");
         return;
     }
 
-    // Criamos um objeto para a entrega
     const nova = {
-        id: Date.now(), // Gera um ID único baseado no tempo
+        id: Date.now(),
         cliente: cliente,
         endereco: endereco,
         status: status
     };
 
-    // Adiciona na lista
     entregas.push(nova);
+    salvarDados(); // SALVA NO NAVEGADOR
 
-    // Limpa os campos para o próximo cadastro
     document.getElementById('cliente').value = "";
     document.getElementById('endereco').value = "";
 
-    alert("Entrega de " + cliente + " registada!");
-    showPage('lista'); // Leva o usuário para ver a lista após cadastrar
+    alert("Entrega registrada!");
+    showPage('lista');
 }
 
-// 5. ATUALIZAR OS CARDS DO DASHBOARD
+// 6. ATUALIZAR STATUS PARA ENTREGUE
+function marcarComoEntregue(id) {
+    const index = entregas.findIndex(e => e.id === id);
+    if (index !== -1) {
+        entregas[index].status = "Entregue";
+        salvarDados(); // SALVA A ALTERAÇÃO
+        renderizarTabela();
+        atualizarDashboard();
+    }
+}
+
+// 7. REMOVER ENTREGA
+function removerEntrega(id) {
+    if(confirm("Deseja realmente excluir esta entrega?")) {
+        entregas = entregas.filter(e => e.id !== id);
+        salvarDados(); // SALVA A EXCLUSÃO
+        renderizarTabela();
+        atualizarDashboard();
+    }
+}
+
+// 8. ATUALIZAR DASHBOARD
 function atualizarDashboard() {
     const total = entregas.length;
     const pendentes = entregas.filter(e => e.status === "Pendente").length;
@@ -68,7 +92,7 @@ function atualizarDashboard() {
     document.getElementById('entregues').innerText = entregues;
 }
 
-// 6. RENDERIZAR (DESENHAR) A TABELA
+// 9. RENDERIZAR TABELA
 function renderizarTabela() {
     const corpoTabela = document.getElementById('tabela');
     corpoTabela.innerHTML = ""; 
@@ -76,9 +100,8 @@ function renderizarTabela() {
     entregas.forEach(entrega => {
         const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
         
-        // Criamos o botão de "Entregue" apenas se o status for "Pendente"
         const botaoConcluir = entrega.status === "Pendente" 
-            ? `<button style="background:#22c55e; margin-right:5px;" onclick="marcarComoEntregue(${entrega.id})">Entregar</button>` 
+            ? `<button style="background:#22c55e; margin-right:5px; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="marcarComoEntregue(${entrega.id})">Entregar</button>` 
             : "";
 
         corpoTabela.innerHTML += `
@@ -88,24 +111,24 @@ function renderizarTabela() {
                 <td class="${classeStatus}">${entrega.status}</td>
                 <td>
                     ${botaoConcluir}
-                    <button style="background:#ef4444;" onclick="removerEntrega(${entrega.id})">Excluir</button>
+                    <button style="background:#ef4444; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="removerEntrega(${entrega.id})">Excluir</button>
                 </td>
             </tr>
         `;
     });
 }
 
-// 7. BUSCA EM TEMPO REAL
+// 10. BUSCA
 function buscar() {
     const termo = document.getElementById('busca').value.toLowerCase();
-    const filtrados = entregas.filter(e => 
-        e.cliente.toLowerCase().includes(termo)
-    );
-    
-    // Renderiza apenas os filtrados
+    const filtrados = entregas.filter(e => e.cliente.toLowerCase().includes(termo));
+    renderizarTabelaFiltrada(filtrados);
+}
+
+function renderizarTabelaFiltrada(dados) {
     const corpoTabela = document.getElementById('tabela');
     corpoTabela.innerHTML = "";
-    filtrados.forEach(entrega => {
+    dados.forEach(entrega => {
         const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
         corpoTabela.innerHTML += `
             <tr>
@@ -118,31 +141,6 @@ function buscar() {
     });
 }
 
-//8. CONCLUIR ENTREGA
-function marcarComoEntregue(id) {
-    // Procuramos a entrega pelo ID dentro do array
-    const index = entregas.findIndex(e => e.id === id);
-    
-    if (index !== -1) {
-        // Mudamos o status para Entregue
-        entregas[index].status = "Entregue";
-        
-        // Atualizamos a tela e o painel
-        renderizarTabela();
-        atualizarDashboard();
-        
-        // Se estiver usando LocalStorage, salve aqui também:
-        // salvarNoLocalStorage(); 
-    }
-}
-
-// 9. REMOVER ENTREGA
-function removerEntrega(id) {
-    entregas = entregas.filter(e => e.id !== id);
-    renderizarTabela();
-}
-
-// 10. LOGOUT
 function logout() {
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login').classList.remove('hidden');
