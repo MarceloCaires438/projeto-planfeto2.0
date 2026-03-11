@@ -154,14 +154,15 @@ function renderizarTabela() {
             acaoPrincipal = `<button style="background:#3b82f6; color:white; border:none; padding:8px; margin-right:5px; border-radius:4px; cursor:pointer;" onclick="verFoto('${e.foto}')">Ver Foto 📸</button>`;
         }
 
+        // Dentro do entregas.forEach no script.js, mude para:
         tabela.innerHTML += `
             <tr>
-                <td>${e.cliente}</td>
-                <td>${e.endereco}</td>
-                <td class="${classe}">${e.status}</td>
-                <td>
+                <td data-label="Cliente">${e.cliente}</td>
+                <td data-label="Endereço">${e.endereco}</td>
+                <td data-label="Status" class="${classe}">${e.status}</td>
+                <td data-label="Ação">
                     ${acaoPrincipal}
-                    <button style="background:#ef4444; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;" onclick="excluir(${e.id})">Excluir</button>
+                    <button style="background:#ef4444; color:white; border:none; padding:8px; border-radius:4px;" onclick="excluir(${e.id})">X</button>
                 </td>
             </tr>`;
     });
