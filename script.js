@@ -71,11 +71,15 @@ function atualizarDashboard() {
 // 6. RENDERIZAR (DESENHAR) A TABELA
 function renderizarTabela() {
     const corpoTabela = document.getElementById('tabela');
-    corpoTabela.innerHTML = ""; // Limpa a tabela antes de desenhar
+    corpoTabela.innerHTML = ""; 
 
     entregas.forEach(entrega => {
-        // Define a cor do status baseado no texto
         const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
+        
+        // Criamos o botão de "Entregue" apenas se o status for "Pendente"
+        const botaoConcluir = entrega.status === "Pendente" 
+            ? `<button style="background:#22c55e; margin-right:5px;" onclick="marcarComoEntregue(${entrega.id})">Entregar</button>` 
+            : "";
 
         corpoTabela.innerHTML += `
             <tr>
@@ -83,7 +87,8 @@ function renderizarTabela() {
                 <td>${entrega.endereco}</td>
                 <td class="${classeStatus}">${entrega.status}</td>
                 <td>
-                    <button style="background:#ef4444; padding:5px;" onclick="removerEntrega(${entrega.id})">Excluir</button>
+                    ${botaoConcluir}
+                    <button style="background:#ef4444;" onclick="removerEntrega(${entrega.id})">Excluir</button>
                 </td>
             </tr>
         `;
@@ -113,13 +118,31 @@ function buscar() {
     });
 }
 
-// 8. REMOVER ENTREGA
+//8. CONCLUIR ENTREGA
+function marcarComoEntregue(id) {
+    // Procuramos a entrega pelo ID dentro do array
+    const index = entregas.findIndex(e => e.id === id);
+    
+    if (index !== -1) {
+        // Mudamos o status para Entregue
+        entregas[index].status = "Entregue";
+        
+        // Atualizamos a tela e o painel
+        renderizarTabela();
+        atualizarDashboard();
+        
+        // Se estiver usando LocalStorage, salve aqui também:
+        // salvarNoLocalStorage(); 
+    }
+}
+
+// 9. REMOVER ENTREGA
 function removerEntrega(id) {
     entregas = entregas.filter(e => e.id !== id);
     renderizarTabela();
 }
 
-// 9. LOGOUT
+// 10. LOGOUT
 function logout() {
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login').classList.remove('hidden');
