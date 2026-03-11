@@ -19,8 +19,10 @@ function showPage(pageId) {
     
     document.getElementById(pageId).classList.remove('hidden');
 
+    // ESTA PARTE É ESSENCIAL:
     if (pageId === 'dashboard') atualizarDashboard();
-    if (pageId === 'lista') renderizarTabela();
+    if (pageId === 'lista') renderizarTabela(); // Chama a função aqui!
+    
     if (pageId === 'mapa-rastreio') {
         setTimeout(() => {
             initMap();
