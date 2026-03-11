@@ -12,8 +12,8 @@
     <div id="login" class="login">
         <img src="logo.png" alt="Logo" class="logo-login">
         <h1>PLANFETO</h1>
-        <input id="user" placeholder="Usuário">
-        <input id="pass" type="password" placeholder="Senha">
+        <input id="user" placeholder="Usuário (admin)">
+        <input id="pass" type="password" placeholder="Senha (123)">
         <button onclick="login()">Entrar</button>
     </div>
 
@@ -42,10 +42,8 @@
                 <h2>Nova Entrega</h2>
                 <input id="cliente" placeholder="Nome do Cliente">
                 <input id="endereco" placeholder="Endereço">
+                <input type="file" id="foto" style="display:none"> 
                 
-                <label style="display:block; margin-bottom:5px; font-size:14px; color:#9ca3af;">Foto do Local/Comprovante:</label>
-                <input type="file" id="foto" accept="image/*" capture="environment" style="background:transparent; border:1px dashed #374151;">
-            
                 <select id="status">
                     <option value="Pendente">Pendente</option>
                     <option value="Entregue">Entregue</option>
@@ -55,10 +53,17 @@
 
             <section id="lista" class="hidden">
                 <h2>Entregas</h2>
-                <input id="busca" placeholder="Buscar cliente..." onkeyup="buscar()">
+                <div id="busca-area">
+                    <input id="busca" placeholder="Buscar cliente..." onkeyup="buscar()">
+                </div>
                 <table>
                     <thead>
-                        <tr><th>Cliente</th><th>Endereço</th><th>Status</th><th>Ação</th></tr>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Endereço</th>
+                            <th>Status</th>
+                            <th>Ação</th>
+                        </tr>
                     </thead>
                     <tbody id="tabela"></tbody>
                 </table>
@@ -71,19 +76,17 @@
         </main>
     </div>
 
-    <div id="modalFoto" class="login hidden" style="background: rgba(0,0,0,0.8); z-index: 10000;">
-    <div style="background: #1f2937; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 400px;">
-        <h3>Comprovante de Entrega</h3>
-        <p style="margin: 15px 0; color: #9ca3af;">Tire uma foto do local ou canhoto:</p>
-        
-        <input type="file" id="fotoEntrega" accept="image/*" capture="environment" style="margin-bottom: 20px;">
-        
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button onclick="fecharModal()" style="background: #4b5563;">Cancelar</button>
-            <button onclick="confirmarEntregaComFoto()" style="background: #22c55e;">Finalizar Entrega</button>
+    <div id="modalFoto" class="login hidden" style="background: rgba(0,0,0,0.9); z-index: 9999; position: fixed; top:0; left:0; width:100%; height:100%;">
+        <div style="background: #1f2937; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px;">
+            <h3 style="color: #3b82f6;">Finalizar Entrega</h3>
+            <p style="color: #9ca3af; margin: 15px 0;">Tire a foto do comprovante:</p>
+            <input type="file" id="fotoEntrega" accept="image/*" capture="environment" style="margin-bottom: 20px; color: white;">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="fecharModal()" style="background: #4b5563; padding:10px; border-radius:5px; border:none; color:white; cursor:pointer;">Cancelar</button>
+                <button onclick="confirmarEntregaComFoto()" style="background: #22c55e; padding:10px; border-radius:5px; border:none; color:white; cursor:pointer;">Confirmar</button>
+            </div>
         </div>
     </div>
-</div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
