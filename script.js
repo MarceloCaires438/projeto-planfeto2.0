@@ -1,54 +1,9 @@
-let entregaPendenteId = null; // Guarda qual entrega está sendo finalizada
-
-// 1. Abre o modal quando clica no botão verde "Entregar" da tabela
-function marcarEntregue(id) {
-    entregaPendenteId = id; // Salva o ID da entrega selecionada
-    document.getElementById('modalFoto').classList.remove('hidden');
-}
-
-// 2. Fecha o modal se desistir
-function fecharModal() {
-    document.getElementById('modalFoto').classList.add('hidden');
-    document.getElementById('fotoEntrega').value = "";
-    entregaPendenteId = null;
-}
-
-// 3. Processa a foto e finaliza a entrega
-async function confirmarEntregaComFoto() {
-    const fotoInput = document.getElementById('fotoEntrega');
-    
-    if (!fotoInput.files || !fotoInput.files[0]) {
-        alert("Senhor Marcelo, é obrigatório tirar a foto para comprovar a entrega!");
-        return;
-    }
-
-    const file = fotoInput.files[0];
-    const fotoBase64 = await toBase64(file);
-
-    // Localiza a entrega no array e atualiza
-    const index = entregas.findIndex(e => e.id === entregaPendenteId);
-    if (index !== -1) {
-        entregas[index].status = "Entregue";
-        entregas[index].foto = fotoBase64; // A foto entra AQUI agora
-        
-        localStorage.setItem('planfeto_db', JSON.stringify(entregas));
-        
-        alert("Entrega concluída com sucesso!");
-        fecharModal();
-        renderizarTabela();
-        atualizarDashboard();
-    }
-}
-
-// Função auxiliar para converter imagem
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-});
+// 1. DADOS E VARIÁVEIS GLOBAIS
+let entregas = JSON.parse(localStorage.getItem('planfeto_db')) || [];
+let entregaPendenteId = null; 
 let map;
 
+// 2. FUNÇÃO DE LOGIN
 function login() {
     const usuario = document.getElementById('user').value;
     const senha = document.getElementById('pass').value;
@@ -61,15 +16,15 @@ function login() {
     }
 }
 
+// 3. NAVEGAÇÃO ENTRE PÁGINAS
 function showPage(pageId) {
     const sections = document.querySelectorAll('main section');
     sections.forEach(s => s.classList.add('hidden'));
     
     document.getElementById(pageId).classList.remove('hidden');
 
-    // ESTA PARTE É ESSENCIAL:
     if (pageId === 'dashboard') atualizarDashboard();
-    if (pageId === 'lista') renderizarTabela(); // Chama a função aqui!
+    if (pageId === 'lista') renderizarTabela(); 
     
     if (pageId === 'mapa-rastreio') {
         setTimeout(() => {
@@ -79,28 +34,15 @@ function showPage(pageId) {
     }
 }
 
-async function addEntrega() {
+// 4. CADASTRO (Sem foto aqui, apenas dados)
+function addEntrega() {
     const cliente = document.getElementById('cliente').value;
     const endereco = document.getElementById('endereco').value;
     const status = document.getElementById('status').value;
-    const fotoInput = document.getElementById('foto');
 
     if (!cliente || !endereco) {
         alert("Preencha os campos obrigatórios!");
         return;
-    }
-
-    let fotoBase64 = "";
-
-    // Lógica para converter imagem em Base64
-    if (fotoInput.files && fotoInput.files[0]) {
-        const file = fotoInput.files[0];
-        // Opcional: Validar tamanho (ex: max 2MB) pois localStorage tem limite de ~5MB
-        if (file.size > 2 * 1024 * 1024) {
-            alert("A foto é muito grande! Tente uma menor que 2MB.");
-            return;
-        }
-        fotoBase64 = await toBase64(file);
     }
 
     const nova = { 
@@ -108,29 +50,59 @@ async function addEntrega() {
         cliente, 
         endereco, 
         status, 
-        foto: fotoBase64 // Salvando a imagem aqui
+        foto: "" // Inicia vazio, será preenchido na entrega
     };
 
     entregas.push(nova);
     localStorage.setItem('planfeto_db', JSON.stringify(entregas));
 
-    // Limpeza e Redirecionamento
     document.getElementById('cliente').value = "";
     document.getElementById('endereco').value = "";
-    document.getElementById('foto').value = "";
 
     alert("Cadastrado com sucesso!");
     showPage('lista');
 }
 
-// Função auxiliar para converter arquivo em Base64
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-});
+// 5. LÓGICA DO MODAL DE FOTO (FINALIZAR ENTREGA)
+function marcarEntregue(id) {
+    entregaPendenteId = id; 
+    document.getElementById('modalFoto').classList.remove('hidden');
+}
 
+function fecharModal() {
+    document.getElementById('modalFoto').classList.add('hidden');
+    document.getElementById('fotoEntrega').value = "";
+    entregaPendenteId = null;
+}
+
+async function confirmarEntregaComFoto() {
+    const fotoInput = document.getElementById('fotoEntrega');
+    
+    if (!fotoInput.files || !fotoInput.files[0]) {
+        alert("Senhor Marcelo, é obrigatório tirar a foto para comprovar a entrega!");
+        return;
+    }
+
+    const file = fotoInput.files[0];
+    
+    // REDIMENSIONAMENTO: Reduz a imagem para não lotar o localStorage
+    const fotoBase64 = await redimensionarImagem(file);
+
+    const index = entregas.findIndex(e => e.id === entregaPendenteId);
+    if (index !== -1) {
+        entregas[index].status = "Entregue";
+        entregas[index].foto = fotoBase64; 
+        
+        localStorage.setItem('planfeto_db', JSON.stringify(entregas));
+        
+        alert("Entrega concluída com sucesso!");
+        fecharModal();
+        renderizarTabela();
+        atualizarDashboard();
+    }
+}
+
+// 6. RENDERIZAÇÃO E DASHBOARD
 function atualizarDashboard() {
     document.getElementById('total').innerText = entregas.length;
     document.getElementById('pendentes').innerText = entregas.filter(e => e.status === "Pendente").length;
@@ -143,9 +115,8 @@ function renderizarTabela() {
 
     entregas.forEach(e => {
         const classe = e.status === "Entregue" ? "ok" : "pendente";
-        
-        // Se já entregou, mostra botão da foto. Se não, mostra botão de entregar.
         let acaoPrincipal = "";
+
         if (e.status === "Pendente") {
             acaoPrincipal = `<button style="background:#22c55e; color:white; border:none; padding:8px; margin-right:5px; border-radius:4px; cursor:pointer;" onclick="marcarEntregue(${e.id})">Entregar</button>`;
         } else if (e.foto) {
@@ -165,23 +136,41 @@ function renderizarTabela() {
     });
 }
 
+// 7. FUNÇÕES AUXILIARES (IMAGEM E MAPA)
 function verFoto(base64) {
     const win = window.open();
     win.document.write(`<body style="margin:0; background:#000; display:flex; justify-content:center; align-items:center;"><img src="${base64}" style="max-width:100%; max-height:100vh;" /></body>`);
 }
 
-function marcarEntregue(id) {
-    const i = entregas.findIndex(e => e.id === id);
-    entregas[i].status = "Entregue";
-    localStorage.setItem('planfeto_db', JSON.stringify(entregas));
-    renderizarTabela();
-    atualizarDashboard();
+function redimensionarImagem(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 800; // Reduz para no máximo 800px de largura
+                const scaleSize = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scaleSize;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL('image/jpeg', 0.7)); // Salva em JPEG com 70% de qualidade
+            };
+        };
+    });
 }
 
 function excluir(id) {
-    entregas = entregas.filter(e => e.id !== id);
-    localStorage.setItem('planfeto_db', JSON.stringify(entregas));
-    renderizarTabela();
+    if(confirm("Deseja excluir este registro?")) {
+        entregas = entregas.filter(e => e.id !== id);
+        localStorage.setItem('planfeto_db', JSON.stringify(entregas));
+        renderizarTabela();
+        atualizarDashboard();
+    }
 }
 
 function initMap() {
