@@ -95,18 +95,33 @@ function renderizarTabela() {
     entregas.forEach(e => {
         const classe = e.status === "Entregue" ? "ok" : "pendente";
         let btnEntregar = e.status === "Pendente" ? `<button style="background:#22c55e; color:white; border:none; padding:5px; margin-right:5px; border-radius:4px;" onclick="marcarEntregue(${e.id})">Entregar</button>` : "";
+        function renderizarTabela() {
+    const tabela = document.getElementById('tabela');
+    tabela.innerHTML = "";
+
+    entregas.forEach(e => {
+        const classe = e.status === "Entregue" ? "ok" : "pendente";
         
+        // Link ou Botão para ver a foto (se existir)
+        let btnFoto = e.foto ? `<button style="background:#3b82f6; color:white; border:none; padding:5px; margin-right:5px; border-radius:4px; cursor:pointer;" onclick="verFoto('${e.foto}')">📸</button>` : "";
+
         tabela.innerHTML += `
             <tr>
                 <td>${e.cliente}</td>
                 <td>${e.endereco}</td>
                 <td class="${classe}">${e.status}</td>
                 <td>
-                    ${btnEntregar}
+                    ${btnFoto}
+                    <button style="background:#22c55e; color:white; border:none; padding:5px; margin-right:5px; border-radius:4px;" onclick="marcarEntregue(${e.id})">Entregar</button>
                     <button style="background:#ef4444; color:white; border:none; padding:5px; border-radius:4px;" onclick="excluir(${e.id})">Excluir</button>
                 </td>
             </tr>`;
     });
+}
+
+function verFoto(base64) {
+    const win = window.open();
+    win.document.write(`<img src="${base64}" style="max-width:100%; height:auto;" />`);
 }
 
 function marcarEntregue(id) {
