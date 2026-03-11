@@ -26,13 +26,11 @@ body {
 
 /* Estilo específico para a logo da tela de login */
 .logo-login {
-    width: 250px;           /* Aumentei de 150px para 250px */
-    height: auto;          /* Mantém a proporção */
-    margin-bottom: 30px;    /* Aumentei o espaço para o nome PLANFETO */
-    
-    /* Toque de design: */
-    filter: drop-shadow(0px 8px 15px rgba(0, 0, 0, 0.6)); 
-    transition: transform 0.3s ease; /* Efeito suave ao passar o mouse */
+    width: 300px !important;  /* Força o tamanho para 300px */
+    max-width: 80vw !important; /* No celular, garante que não ultrapasse a tela */
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto 30px auto !important;
 }
 
 .logo-login:hover {
