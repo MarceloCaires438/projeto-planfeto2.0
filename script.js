@@ -92,32 +92,19 @@ function marcarComoEntregue(id) {
 }
 
 // 8. ATUALIZAR DASHBOARD
-function renderizarTabela() {
-    const corpoTabela = document.getElementById('tabela');
-    corpoTabela.innerHTML = ""; 
+function atualizarDashboard() {
+    // 1. Pega a quantidade total do array
+    const total = entregas.length;
+    
+    // 2. Filtra para contar pendentes e entregues
+    // Nota: O texto deve ser exatamente "Pendente" e "Entregue" (com maiúscula se for assim que salvou)
+    const pendentes = entregas.filter(e => e.status === "Pendente").length;
+    const entregues = entregas.filter(e => e.status === "Entregue").length;
 
-    entregas.forEach(entrega => {
-        const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
-        
-        // --- ESTA É A PARTE IMPORTANTE ---
-        // Se estiver pendente, cria o botão verde. Se já estiver entregue, fica vazio.
-        let botaoEntregar = "";
-        if (entrega.status === "Pendente") {
-            botaoEntregar = `<button style="background:#22c55e; margin-right:5px; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="marcarComoEntregue(${entrega.id})">Entregar</button>`;
-        }
-
-        corpoTabela.innerHTML += `
-            <tr>
-                <td>${entrega.cliente}</td>
-                <td>${entrega.endereco}</td>
-                <td class="${classeStatus}">${entrega.status}</td>
-                <td>
-                    ${botaoEntregar}
-                    <button style="background:#ef4444; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="removerEntrega(${entrega.id})">Excluir</button>
-                </td>
-            </tr>
-        `;
-    });
+    // 3. Injeta os valores nos IDs do HTML
+    document.getElementById('total').innerText = total;
+    document.getElementById('pendentes').innerText = pendentes;
+    document.getElementById('entregues').innerText = entregues;
 }
 
 // 9. RENDERIZAR TABELA
