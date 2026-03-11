@@ -156,9 +156,14 @@ function renderizarTabela() {
 }
 
 // 7. FUNÇÕES AUXILIARES (IMAGEM E MAPA)
-function verFoto(base64) {
-    const win = window.open();
-    win.document.write(`<body style="margin:0; background:#000; display:flex; justify-content:center; align-items:center;"><img src="${base64}" style="max-width:100%; max-height:100vh;" /></body>`);
+function verFoto(foto) {
+    if (foto === "fake-photo-placeholder") {
+        alert("Senhor Marcelo, esta é uma visualização demonstrativa. No sistema real, a foto capturada pelo funcionário apareceria aqui para o cliente conferir.");
+    } else {
+        // Se for uma foto real (Base64), abre normal
+        const win = window.open();
+        win.document.write(`<img src="${foto}" style="width:100%">`);
+    }
 }
 
 function redimensionarImagem(file) {
