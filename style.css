@@ -187,3 +187,76 @@ th { background: #1f2937; }
 /* CORES DE STATUS */
 .ok { color: #22c55e; font-weight: bold; }
 .pendente { color: #f59e0b; font-weight: bold; }
+
+/* AJUSTES PARA CELULAR (Telas menores que 768px) */
+@media (max-width: 768px) {
+    #app {
+        flex-direction: column; /* Menu e Conteúdo ficam um sobre o outro */
+    }
+
+    aside {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        flex-direction: row; /* Botões ficam lado a lado */
+        overflow-x: auto;    /* Se tiver muitos botões, permite rolar pro lado */
+        position: static;
+    }
+
+    aside h2, aside img {
+        display: none; /* Esconde a logo no menu do celular para ganhar espaço */
+    }
+
+    aside button {
+        margin: 5px;
+        padding: 10px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    /* Cards do Dashboard ficam em uma coluna só */
+    .cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    /* TABELA RESPONSIVA: O maior desafio no celular */
+    table, thead, tbody, th, td, tr {
+        display: block; /* Transforma a tabela em blocos empilhados */
+    }
+
+    thead tr {
+        display: none; /* Esconde o cabeçalho original */
+    }
+
+    tr {
+        margin-bottom: 15px;
+        border: 1px solid #374151;
+        border-radius: 8px;
+        padding: 10px;
+        background: #1f2937;
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 5px;
+        border: none;
+        border-bottom: 1px solid #2d3748;
+    }
+
+    td::before {
+        content: attr(data-label); /* Usa um rótulo para dizer o que é o dado */
+        font-weight: bold;
+        color: #3b82f6;
+    }
+
+    td:last-child {
+        border-bottom: none;
+        justify-content: center;
+    }
+}
