@@ -1,115 +1,116 @@
-let entregas = JSON.parse(localStorage.getItem("entregas")) || []
+// Banco de dados em memória (inicia vazio)
+let entregas = [];
 
-function login(){
+// 1. FUNÇÃO DE LOGIN
+function login() {
+    const usuario = document.getElementById('user').value;
+    const senha = document.getElementById('pass').value;
 
-let u = document.getElementById("user").value
-let p = document.getElementById("pass").value
-
-if(u === "admin" && p === "123"){
-
-document.getElementById("login").style.display="none"
-document.getElementById("app").classList.remove("hidden")
-
-update()
-
-}else{
-
-alert("Login inválido")
-
+    // Simulação de login simples
+    if (usuario === "admin" && senha === "123") {
+        document.getElementById('login').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+        showPage('dashboard'); // Abre na dashboard por padrão
+    } else {
+        alert("Usuário ou senha incorretos! (Dica: admin / 123)");
+    }
 }
 
+// 2. NAVEGAÇÃO ENTRE PÁGINAS (SECTIONS)
+function showPage(pageId) {
+    // Esconde todas as seções dentro do main
+    const sections = document.querySelectorAll('main section');
+    sections.forEach(section => {
+        section.classList.add('hidden');
+    });
+
+    // Mostra apenas a seção clicada
+    document.getElementById(pageId).classList.remove('hidden');
+
+    // Se for a dashboard ou lista, atualiza os dados
+    if (pageId === 'dashboard') atualizarDashboard();
+    if (pageId === 'lista') renderizarTabela();
 }
 
-function logout(){
-location.reload()
+// 3. ADICIONAR NOVA ENTREGA
+function addEntrega() {
+    const cliente = document.getElementById('cliente').value;
+    const endereco = document.getElementById('endereco').value;
+    const status = document.getElementById('status').value;
+
+    if (cliente === "" || endereco === "") {
+        alert("Por favor, preencha todos os campos.");
+        return;
+    }
+
+    const novaEntrega = {
+        id: Date.now(),
+        cliente: cliente,
+        endereco: endereco,
+        status: status
+    };
+
+    entregas.push(novaEntrega);
+    
+    // Limpa os campos
+    document.getElementById('cliente').value = "";
+    document.getElementById('endereco').value = "";
+    
+    alert("Entrega cadastrada com sucesso!");
+    showPage('lista'); // Redireciona para a lista
 }
 
-function showPage(page){
+// 4. ATUALIZAR DASHBOARD (CARDS)
+function atualizarDashboard() {
+    const total = entregas.length;
+    const pendentes = entregas.filter(e => e.status === "Pendente").length;
+    const entregues = entregas.filter(e => e.status === "Entregue").length;
 
-document.querySelectorAll("main section")
-.forEach(s => s.classList.add("hidden"))
-
-document.getElementById(page).classList.remove("hidden")
-
-if(page === "lista") render()
-
+    document.getElementById('total').innerText = total;
+    document.getElementById('pendentes').innerText = pendentes;
+    document.getElementById('entregues').innerText = entregues;
 }
 
-function addEntrega(){
+// 5. RENDERIZAR TABELA DE ENTREGAS
+function renderizarTabela(dadosParaExibir = entregas) {
+    const tabela = document.getElementById('tabela');
+    tabela.innerHTML = "";
 
-let cliente = document.getElementById("cliente").value
-let endereco = document.getElementById("endereco").value
-let status = document.getElementById("status").value
-
-entregas.push({cliente,endereco,status})
-
-localStorage.setItem("entregas",JSON.stringify(entregas))
-
-alert("Entrega cadastrada!")
-
-update()
-
+    dadosParaExibir.forEach((entrega, index) => {
+        const classeStatus = entrega.status.toLowerCase() === "entregue" ? "ok" : "pendente";
+        
+        tabela.innerHTML += `
+            <tr>
+                <td>${entrega.cliente}</td>
+                <td>${entrega.endereco}</td>
+                <td class="${classeStatus}">${entrega.status}</td>
+                <td>
+                    <button style="background: #ef4444; padding: 5px 10px;" onclick="removerEntrega(${entrega.id})">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
 }
 
-function render(){
-
-let tabela = document.getElementById("tabela")
-
-tabela.innerHTML=""
-
-entregas.forEach((e,i)=>{
-
-tabela.innerHTML += `
-<tr>
-<td>${e.cliente}</td>
-<td>${e.endereco}</td>
-<td>${e.status}</td>
-<td>
-<button onclick="toggle(${i})">Status</button>
-</td>
-</tr>
-`
-
-})
-
+// 6. BUSCA FILTRADA
+function buscar() {
+    const termo = document.getElementById('busca').value.toLowerCase();
+    const filtrados = entregas.filter(e => 
+        e.cliente.toLowerCase().includes(termo) || 
+        e.endereco.toLowerCase().includes(termo)
+    );
+    renderizarTabela(filtrados);
 }
 
-function toggle(i){
-
-entregas[i].status =
-entregas[i].status === "Pendente" ? "Entregue" : "Pendente"
-
-localStorage.setItem("entregas",JSON.stringify(entregas))
-
-render()
-update()
-
+// 7. REMOVER ENTREGA
+function removerEntrega(id) {
+    entregas = entregas.filter(e => e.id !== id);
+    renderizarTabela();
+    atualizarDashboard();
 }
 
-function buscar(){
-
-let termo = document.getElementById("busca").value.toLowerCase()
-
-let linhas = document.querySelectorAll("#tabela tr")
-
-linhas.forEach(l=>{
-
-let cliente = l.children[0].innerText.toLowerCase()
-
-l.style.display = cliente.includes(termo) ? "" : "none"
-
-})
-
-}
-
-function update(){
-
-let total = entregas.length
-let pendentes = entregas.filter(e=>e.status==="Pendente").length
-let entregues = entregas.filter(e=>e.status==="Entregue").length
-
-document.getElementById("total").innerText = total
-document.getElementById("pendentes").innerText = pendentes
-document.getElementById("entregues").innerText = entregues
-
+// 8. LOGOUT
+function logout() {
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('login').classList.remove('hidden');
 }
