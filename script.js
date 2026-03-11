@@ -3,33 +3,54 @@ let entregas = [];
 
 // 1. FUNÇÃO DE LOGIN
 function login() {
+    // Captura os valores dos inputs
     const usuario = document.getElementById('user').value;
     const senha = document.getElementById('pass').value;
 
-    // Simulação de login simples
+    // Verificação simples (usuário: admin / senha: 123)
     if (usuario === "admin" && senha === "123") {
+        
+        // A MÁGICA ACONTECE AQUI:
+        // Esconde a tela de login
         document.getElementById('login').classList.add('hidden');
+        
+        // Mostra a div do sistema
         document.getElementById('app').classList.remove('hidden');
-        showPage('dashboard'); // Abre na dashboard por padrão
+        
+        // Garante que a primeira página a aparecer seja o Dashboard
+        showPage('dashboard');
+        
     } else {
-        alert("Usuário ou senha incorretos! (Dica: admin / 123)");
+        alert("Usuário ou senha inválidos! Tente admin / 123");
     }
 }
 
-// 2. NAVEGAÇÃO ENTRE PÁGINAS (SECTIONS)
+// 2. FUNÇÃO DE NAVEGAÇÃO ENTRE ABAS
 function showPage(pageId) {
-    // Esconde todas as seções dentro do main
+    // Primeiro, selecionamos todas as seções de conteúdo
     const sections = document.querySelectorAll('main section');
+    
+    // Escondemos todas elas
     sections.forEach(section => {
         section.classList.add('hidden');
     });
 
-    // Mostra apenas a seção clicada
-    document.getElementById(pageId).classList.remove('hidden');
+    // Removemos o 'hidden' apenas da seção que queremos ver
+    const targetSection = document.getElementById(pageId);
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
+    }
+}
 
-    // Se for a dashboard ou lista, atualiza os dados
-    if (pageId === 'dashboard') atualizarDashboard();
-    if (pageId === 'lista') renderizarTabela();
+// 3. FUNÇÃO DE LOGOUT (VOLTAR PARA O LOGIN)
+function logout() {
+    // Inverte o processo do login
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('login').classList.remove('hidden');
+    
+    // Limpa os campos de texto por segurança
+    document.getElementById('user').value = "";
+    document.getElementById('pass').value = "";
 }
 
 // 3. ADICIONAR NOVA ENTREGA
