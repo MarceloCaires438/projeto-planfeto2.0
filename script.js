@@ -86,9 +86,9 @@ function marcarComoEntregue(id) {
     const index = entregas.findIndex(e => e.id === id);
     if (index !== -1) {
         entregas[index].status = "Entregue";
-        salvarDados(); // Se estiver usando localStorage
+        salvarDados(); 
         renderizarTabela();
-        atualizarDashboard();
+        atualizarDashboard(); // Adicione isso aqui para o número mudar na hora!
     }
 }
 
