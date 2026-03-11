@@ -6,34 +6,25 @@
     <title>Planfeto - Sistema de Entregas</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
     <div id="login" class="login">
-
-        <img src="nova_divulgacao_logo.png" alt="Logo Planfeto" class="logo-login">
-    
-        <h1></h1>
-    
-        <input id="user" placeholder="Usuário (admin)">
-        <input id="pass" type="password" placeholder="Senha (123)">
-    
+        <img src="logo.png" alt="Logo" class="logo-login">
+        <h1>PLANFETO</h1>
+        <input id="user" placeholder="Usuário">
+        <input id="pass" type="password" placeholder="Senha">
         <button onclick="login()">Entrar</button>
-    
     </div>
 
     <div id="app" class="hidden">
         <aside>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img src="nova_divulgacao_logo.png" alt="Logo Planfeto" style="width: 200px; height: auto; border-radius: 10px;">
-            </div>
-    
-            <h2></h2>
-            <button onclick="showPage('mapa-rastreio')">Mapa de Rotas</button>
+            <img src="logo.png" style="width: 80px; margin: 0 auto 10px; display: block;">
+            <h2>Planfeto</h2>
             <button onclick="showPage('dashboard')">Dashboard</button>
             <button onclick="showPage('nova')">Nova Entrega</button>
             <button onclick="showPage('lista')">Entregas</button>
+            <button onclick="showPage('mapa-rastreio')">Mapa de Rotas</button>
             <button onclick="logout()">Sair</button>
         </aside>
 
@@ -41,62 +32,42 @@
             <section id="dashboard">
                 <h2>Painel</h2>
                 <div class="cards">
-                    <div class="card">
-                        <h3 id="total">0</h3>
-                        <p>Total</p>
-                    </div>
-                    <div class="card">
-                        <h3 id="pendentes">0</h3>
-                        <p>Pendentes</p>
-                    </div>
-                    <div class="card">
-                        <h3 id="entregues">0</h3>
-                        <p>Entregues</p>
-                    </div>
+                    <div class="card"><h3 id="total">0</h3><p>Total</p></div>
+                    <div class="card"><h3 id="pendentes">0</h3><p>Pendentes</p></div>
+                    <div class="card"><h3 id="entregues">0</h3><p>Entregues</p></div>
                 </div>
             </section>
 
             <section id="nova" class="hidden">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="nova_divulgacao_logo.png" alt="Logo" style="width: 120px; height: auto;">
-                </div>
-
                 <h2>Nova Entrega</h2>
-            
                 <input id="cliente" placeholder="Nome do Cliente">
-                <input id="endereco" placeholder="Endereço Completo">
-                
+                <input id="endereco" placeholder="Endereço">
                 <select id="status">
                     <option value="Pendente">Pendente</option>
                     <option value="Entregue">Entregue</option>
                 </select>
-            
                 <button onclick="addEntrega()">Cadastrar Entrega</button>
             </section>
 
-            <section id="mapa-rastreio" class="hidden">
-                <h2>Circulação de Entregas</h2>
-                <div id="map" style="height: 450px; width: 100%; border-radius: 12px; border: 2px solid #374151;"></div>
-            </section>
-
             <section id="lista" class="hidden">
-                <h2>Lista de Entregas</h2>
-                <input id="busca" placeholder="Buscar por cliente..." onkeyup="buscar()">
+                <h2>Entregas</h2>
+                <input id="busca" placeholder="Buscar cliente..." onkeyup="buscar()">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Endereço</th>
-                            <th>Status</th>
-                            <th>Ação</th>
-                        </tr>
+                        <tr><th>Cliente</th><th>Endereço</th><th>Status</th><th>Ação</th></tr>
                     </thead>
                     <tbody id="tabela"></tbody>
                 </table>
             </section>
+
+            <section id="mapa-rastreio" class="hidden">
+                <h2>Mapa de Circulação</h2>
+                <div id="map" style="height: 450px; width: 100%; border-radius: 12px;"></div>
+            </section>
         </main>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
