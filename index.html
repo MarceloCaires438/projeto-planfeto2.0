@@ -1,117 +1,84 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planfeto</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planfeto</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- LOGIN -->
+    <div id="login" class="login">
+        <h1>PLANFETO</h1>
+        <input id="user" placeholder="Usuário">
+        <input id="pass" type="password" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+    </div>
 
-<div id="login" class="login">
+    <div id="app" class="hidden">
+        
+        <aside>
+            <h2>Planfeto</h2>
+            <button onclick="showPage('dashboard')">Dashboard</button>
+            <button onclick="showPage('nova')">Nova Entrega</button>
+            <button onclick="showPage('lista')">Entregas</button>
+            <button onclick="logout()">Sair</button>
+        </aside>
 
-<h1>PLANFETO</h1>
+        <main>
+            <section id="dashboard">
+                <h2>Painel</h2>
+                <div class="cards">
+                    <div class="card">
+                        <h3 id="total">0</h3>
+                        <p>Total</p>
+                    </div>
+                    <div class="card">
+                        <h3 id="pendentes">0</h3>
+                        <p>Pendentes</p>
+                    </div>
+                    <div class="card">
+                        <h3 id="entregues">0</h3>
+                        <p>Entregues</p>
+                    </div>
+                </div>
+            </section>
 
-<input id="user" placeholder="Usuário">
-<input id="pass" type="password" placeholder="Senha">
+            <section id="nova" class="hidden">
+                <h2>Nova Entrega</h2>
+                <input id="cliente" placeholder="Cliente">
+                <input id="endereco" placeholder="Endereço">
+                
+                <select id="status">
+                    <option value="Pendente">Pendente</option>
+                    <option value="Entregue">Entregue</option>
+                </select>
 
-<button onclick="login()">Entrar</button>
+                <button onclick="addEntrega()">Cadastrar</button>
+            </section>
 
-</div>
+            <section id="lista" class="hidden">
+                <h2>Entregas</h2>
+                <input id="busca" placeholder="Buscar cliente" onkeyup="buscar()">
 
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Endereço</th>
+                            <th>Status</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela">
+                        </tbody>
+                </table>
+            </section>
+        </main>
 
-<!-- SISTEMA -->
+    </div>
 
-<div id="app" class="hidden">
-
-<aside>
-
-<h2>Planfeto</h2>
-
-<button onclick="showPage('dashboard')">Dashboard</button>
-<button onclick="showPage('nova')">Nova Entrega</button>
-<button onclick="showPage('lista')">Entregas</button>
-<button onclick="logout()">Sair</button>
-
-</aside>
-
-
-<main>
-
-<section id="dashboard">
-
-<h2>Painel</h2>
-
-<div class="cards">
-
-<div class="card">
-<h3 id="total"></h3>
-<p>Total</p>
-</div>
-
-<div class="card">
-<h3 id="pendentes"></h3>
-<p>Pendentes</p>
-</div>
-
-<div class="card">
-<h3 id="entregues"></h3>
-<p>Entregues</p>
-</div>
-
-</div>
-
-</section>
-
-
-<section id="nova" class="hidden">
-
-<h2>Nova Entrega</h2>
-
-<input id="cliente" placeholder="Cliente">
-<input id="endereco" placeholder="Endereço">
-
-<select id="status">
-<option>Pendente</option>
-<option>Entregue</option>
-</select>
-
-<button onclick="addEntrega()">Cadastrar</button>
-
-</section>
-
-
-<section id="lista" class="hidden">
-
-<h2>Entregas</h2>
-
-<input id="busca" placeholder="Buscar cliente" onkeyup="buscar()">
-
-<table>
-
-<thead>
-<tr>
-<th>Cliente</th>
-<th>Endereço</th>
-<th>Status</th>
-<th>Ação</th>
-</tr>
-</thead>
-
-<tbody id="tabela"></tbody>
-
-</table>
-
-</section>
-
-</main>
-
-</div>
-
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
