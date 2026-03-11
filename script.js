@@ -31,26 +31,57 @@ function showPage(pageId) {
     }
 }
 
-function addEntrega() {
+async function addEntrega() {
     const cliente = document.getElementById('cliente').value;
     const endereco = document.getElementById('endereco').value;
     const status = document.getElementById('status').value;
+    const fotoInput = document.getElementById('foto');
 
     if (!cliente || !endereco) {
-        alert("Preencha os campos!");
+        alert("Preencha os campos obrigatórios!");
         return;
     }
 
-    const nova = { id: Date.now(), cliente, endereco, status };
+    let fotoBase64 = "";
+
+    // Lógica para converter imagem em Base64
+    if (fotoInput.files && fotoInput.files[0]) {
+        const file = fotoInput.files[0];
+        // Opcional: Validar tamanho (ex: max 2MB) pois localStorage tem limite de ~5MB
+        if (file.size > 2 * 1024 * 1024) {
+            alert("A foto é muito grande! Tente uma menor que 2MB.");
+            return;
+        }
+        fotoBase64 = await toBase64(file);
+    }
+
+    const nova = { 
+        id: Date.now(), 
+        cliente, 
+        endereco, 
+        status, 
+        foto: fotoBase64 // Salvando a imagem aqui
+    };
+
     entregas.push(nova);
     localStorage.setItem('planfeto_db', JSON.stringify(entregas));
 
+    // Limpeza e Redirecionamento
     document.getElementById('cliente').value = "";
     document.getElementById('endereco').value = "";
+    document.getElementById('foto').value = "";
 
     alert("Cadastrado com sucesso!");
-    showPage('lista'); // Isso garante que você veja o resultado na tabela
+    showPage('lista');
 }
+
+// Função auxiliar para converter arquivo em Base64
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+});
 
 function atualizarDashboard() {
     document.getElementById('total').innerText = entregas.length;
