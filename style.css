@@ -5,8 +5,11 @@ background:#f4f6fa;
 }
 
 .login{
-text-align:center;
-margin-top:150px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
 .login input{
