@@ -76,17 +76,21 @@
         </main>
     </div>
 
-    <div id="modalFoto" class="login hidden" style="background: rgba(0,0,0,0.9); z-index: 9999; position: fixed; top:0; left:0; width:100%; height:100%;">
-        <div style="background: #1f2937; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px;">
-            <h3 style="color: #3b82f6;">Finalizar Entrega</h3>
-            <p style="color: #9ca3af; margin: 15px 0;">Tire a foto do comprovante:</p>
-            <input type="file" id="fotoEntrega" accept="image/*" capture="environment" style="margin-bottom: 20px; color: white;">
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button onclick="fecharModal()" style="background: #4b5563; padding:10px; border-radius:5px; border:none; color:white; cursor:pointer;">Cancelar</button>
-                <button onclick="confirmarEntregaComFoto()" style="background: #22c55e; padding:10px; border-radius:5px; border:none; color:white; cursor:pointer;">Confirmar</button>
-            </div>
+    <div id="modalFoto" class="login hidden" style="background: rgba(0,0,0,0.9); z-index: 9999; position: fixed; top:0; left:0; width:100%; height:100%; display: flex; align-items: center; justify-content: center;">
+    <div style="background: #1f2937; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; border: 1px solid #374151;">
+        <h3 style="color: #3b82f6; margin-bottom: 10px;">Comprovante de Entrega</h3>
+        <p style="color: #9ca3af; margin-bottom: 20px;">O funcionário usaria a câmera agora para registrar o local.</p>
+        
+        <div id="progresso-area" class="hidden" style="width: 100%; background: #374151; height: 10px; border-radius: 5px; margin-bottom: 20px; overflow: hidden;">
+            <div id="barra" style="width: 0%; height: 100%; background: #22c55e; transition: width 0.5s;"></div>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="btn-cancela" onclick="fecharModal()" style="background: #4b5563; padding: 10px 20px; border-radius: 5px; border: none; color: white; cursor: pointer;">Cancelar</button>
+            <button id="btn-envia" onclick="simularEnvioFoto()" style="background: #22c55e; padding: 10px 20px; border-radius: 5px; border: none; color: white; cursor: pointer;">Simular Envio de Foto 📸</button>
         </div>
     </div>
+</div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
