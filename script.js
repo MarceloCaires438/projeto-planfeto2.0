@@ -1,13 +1,7 @@
-// 1. BANCO DE DADOS (Agora busca do LocalStorage ao iniciar)
-let entregas = JSON.parse(localStorage.getItem('planfeto_dados')) || [];
+// 1. CARREGAR DADOS DO NAVEGADOR
+let entregas = JSON.parse(localStorage.getItem('planfeto_db')) || [];
 
-// 2. FUNÇÕES DE PERSISTÊNCIA (A Mágica do Salvamento)
-function salvarDados() {
-    // Transforma o array em texto e salva no navegador
-    localStorage.setItem('planfeto_dados', JSON.stringify(entregas));
-}
-
-// 3. FUNÇÃO DE LOGIN
+// 2. FUNÇÃO DE LOGIN
 function login() {
     const usuario = document.getElementById('user').value;
     const senha = document.getElementById('pass').value;
@@ -15,22 +9,30 @@ function login() {
     if (usuario === "admin" && senha === "123") {
         document.getElementById('login').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
+        
+        // Atualiza tudo ao entrar
         atualizarDashboard();
         showPage('dashboard');
     } else {
-        alert("Acesso negado, senhor Marcelo.");
+        alert("Usuário ou senha incorretos, senhor Marcelo.");
     }
 }
 
-// 4. NAVEGAÇÃO
+// 3. NAVEGAÇÃO ENTRE TELAS
 function showPage(pageId) {
     const sections = document.querySelectorAll('main section');
     sections.forEach(s => s.classList.add('hidden'));
 
     document.getElementById(pageId).classList.remove('hidden');
 
-    if (pageId === 'dashboard') atualizarDashboard();
+    // Atualiza os dados sempre que trocar de tela
+    atualizarDashboard();
     if (pageId === 'lista') renderizarTabela();
+}
+
+// 4. SALVAR NO NAVEGADOR
+function salvarNoStorage() {
+    localStorage.setItem('planfeto_db', JSON.stringify(entregas));
 }
 
 // 5. CADASTRAR NOVA ENTREGA
@@ -39,127 +41,112 @@ function addEntrega() {
     const endereco = document.getElementById('endereco').value;
     const status = document.getElementById('status').value;
 
-    if (cliente === "" || endereco === "") {
-        alert("Preencha tudo corretamente.");
+    if (!cliente || !endereco) {
+        alert("Por favor, preencha todos os campos.");
         return;
     }
 
-    const nova = {
+    const novaEntrega = {
         id: Date.now(),
         cliente: cliente,
         endereco: endereco,
         status: status
     };
 
-    entregas.push(nova);
-    salvarDados(); // SALVA NO NAVEGADOR
-
+    entregas.push(novaEntrega);
+    salvarNoStorage();
+    
+    // Limpa os campos
     document.getElementById('cliente').value = "";
     document.getElementById('endereco').value = "";
 
-    alert("Entrega registrada!");
-    showPage('lista');
+    alert("Entrega de " + cliente + " cadastrada!");
+    showPage('dashboard'); // Volta para o painel para ver o número atualizar
 }
 
-// 6. ATUALIZAR STATUS PARA ENTREGUE
-function marcarComoEntregue(id) {
-    const index = entregas.findIndex(e => e.id === id);
-    if (index !== -1) {
-        entregas[index].status = "Entregue";
-        salvarDados(); // SALVA A ALTERAÇÃO
-        renderizarTabela();
-        atualizarDashboard();
-    }
-}
-
-// 7. REMOVER ENTREGA
-function removerEntrega(id) {
-    if(confirm("Deseja realmente excluir esta entrega?")) {
-        entregas = entregas.filter(e => e.id !== id);
-        salvarDados(); // SALVA A EXCLUSÃO
-        renderizarTabela();
-        atualizarDashboard();
-    }
-}
-
-function marcarComoEntregue(id) {
-    const index = entregas.findIndex(e => e.id === id);
-    if (index !== -1) {
-        entregas[index].status = "Entregue";
-        salvarDados(); 
-        renderizarTabela();
-        atualizarDashboard(); // Adicione isso aqui para o número mudar na hora!
-    }
-}
-
-// 8. ATUALIZAR DASHBOARD
+// 6. ATUALIZAR NÚMEROS DO PAINEL (DASHBOARD)
 function atualizarDashboard() {
-    // 1. Pega a quantidade total do array
     const total = entregas.length;
-    
-    // 2. Filtra para contar pendentes e entregues
-    // Nota: O texto deve ser exatamente "Pendente" e "Entregue" (com maiúscula se for assim que salvou)
+    // O filter deve bater exatamente com os "values" do select no HTML
     const pendentes = entregas.filter(e => e.status === "Pendente").length;
     const entregues = entregas.filter(e => e.status === "Entregue").length;
 
-    // 3. Injeta os valores nos IDs do HTML
+    // Injeta os valores nas tags h3
     document.getElementById('total').innerText = total;
     document.getElementById('pendentes').innerText = pendentes;
     document.getElementById('entregues').innerText = entregues;
 }
 
-// 9. RENDERIZAR TABELA
+// 7. RENDERIZAR TABELA NA TELA DE ENTREGAS
 function renderizarTabela() {
-    const corpoTabela = document.getElementById('tabela');
-    corpoTabela.innerHTML = ""; 
+    const tabela = document.getElementById('tabela');
+    tabela.innerHTML = "";
 
     entregas.forEach(entrega => {
         const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
         
-        // --- ESTA É A PARTE IMPORTANTE ---
-        // Se estiver pendente, cria o botão verde. Se já estiver entregue, fica vazio.
-        let botaoEntregar = "";
+        // Botão de "Entregar" só aparece se estiver pendente
+        let btnEntregar = "";
         if (entrega.status === "Pendente") {
-            botaoEntregar = `<button style="background:#22c55e; margin-right:5px; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="marcarComoEntregue(${entrega.id})">Entregar</button>`;
+            btnEntregar = `<button style="background:#22c55e; margin-right:5px; padding:5px 10px; border-radius:4px; color:white; border:none; cursor:pointer;" onclick="marcarEntregue(${entrega.id})">Entregar</button>`;
         }
 
-        corpoTabela.innerHTML += `
+        tabela.innerHTML += `
             <tr>
                 <td>${entrega.cliente}</td>
                 <td>${entrega.endereco}</td>
                 <td class="${classeStatus}">${entrega.status}</td>
                 <td>
-                    ${botaoEntregar}
-                    <button style="background:#ef4444; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="removerEntrega(${entrega.id})">Excluir</button>
+                    ${btnEntregar}
+                    <button style="background:#ef4444; padding:5px 10px; border-radius:4px; color:white; border:none; cursor:pointer;" onclick="excluirEntrega(${entrega.id})">Excluir</button>
                 </td>
             </tr>
         `;
     });
 }
 
+// 8. MARCAR COMO ENTREGUE
+function marcarEntregue(id) {
+    const index = entregas.findIndex(e => e.id === id);
+    if (index !== -1) {
+        entregas[index].status = "Entregue";
+        salvarNoStorage();
+        renderizarTabela();
+        atualizarDashboard();
+    }
+}
+
+// 9. EXCLUIR ENTREGA
+function excluirEntrega(id) {
+    if(confirm("Deseja excluir este registro?")) {
+        entregas = entregas.filter(e => e.id !== id);
+        salvarNoStorage();
+        renderizarTabela();
+        atualizarDashboard();
+    }
+}
+
 // 10. BUSCA
 function buscar() {
     const termo = document.getElementById('busca').value.toLowerCase();
     const filtrados = entregas.filter(e => e.cliente.toLowerCase().includes(termo));
-    renderizarTabelaFiltrada(filtrados);
-}
-
-function renderizarTabelaFiltrada(dados) {
-    const corpoTabela = document.getElementById('tabela');
-    corpoTabela.innerHTML = "";
-    dados.forEach(entrega => {
+    
+    const tabela = document.getElementById('tabela');
+    tabela.innerHTML = "";
+    filtrados.forEach(entrega => {
         const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
-        corpoTabela.innerHTML += `
+        tabela.innerHTML += `
             <tr>
                 <td>${entrega.cliente}</td>
                 <td>${entrega.endereco}</td>
                 <td class="${classeStatus}">${entrega.status}</td>
-                <td><button onclick="removerEntrega(${entrega.id})">Excluir</button></td>
+                <td><button onclick="excluirEntrega(${entrega.id})">Excluir</button></td>
             </tr>
         `;
     });
 }
 
+// 11. SAIR
 function logout() {
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login').classList.remove('hidden');
