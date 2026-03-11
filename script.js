@@ -115,9 +115,12 @@ function renderizarTabela() {
     entregas.forEach(entrega => {
         const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
         
-        const botaoConcluir = entrega.status === "Pendente" 
-            ? `<button style="background:#22c55e; margin-right:5px; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="marcarComoEntregue(${entrega.id})">Entregar</button>` 
-            : "";
+        // --- ESTA É A PARTE IMPORTANTE ---
+        // Se estiver pendente, cria o botão verde. Se já estiver entregue, fica vazio.
+        let botaoEntregar = "";
+        if (entrega.status === "Pendente") {
+            botaoEntregar = `<button style="background:#22c55e; margin-right:5px; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="marcarComoEntregue(${entrega.id})">Entregar</button>`;
+        }
 
         corpoTabela.innerHTML += `
             <tr>
@@ -125,7 +128,7 @@ function renderizarTabela() {
                 <td>${entrega.endereco}</td>
                 <td class="${classeStatus}">${entrega.status}</td>
                 <td>
-                    ${botaoConcluir}
+                    ${botaoEntregar}
                     <button style="background:#ef4444; padding: 5px 10px; border-radius: 4px; color: white; border: none; cursor:pointer;" onclick="removerEntrega(${entrega.id})">Excluir</button>
                 </td>
             </tr>
