@@ -64,62 +64,74 @@ function addEntrega() {
 }
 
 // 5. LÓGICA DO MODAL DE FOTO (FINALIZAR ENTREGA)
+// 1. Abre a janela de simulação
 function marcarEntregue(id) {
     entregaPendenteId = id; 
-    document.getElementById('modalFoto').classList.remove('hidden');
+    const modal = document.getElementById('modalFoto');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex'; // Garante que ele apareça centralizado
+    }
 }
 
+// 2. Fecha a janela e limpa os efeitos
 function fecharModal() {
-    document.getElementById('modalFoto').classList.add('hidden');
-    document.getElementById('fotoEntrega').value = "";
+    const modal = document.getElementById('modalFoto');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none'; // Esconde completamente o fundo escuro
+    }
+    
+    // Reseta a barra para a próxima vez
+    const barra = document.getElementById('barra');
+    if (barra) barra.style.width = "0%";
+    
+    const barraArea = document.getElementById('progresso-area');
+    if (barraArea) barraArea.classList.add('hidden');
+
+    const btnEnvia = document.getElementById('btn-envia');
+    if (btnEnvia) {
+        btnEnvia.disabled = false;
+        btnEnvia.innerText = "Simular Envio de Foto 📸";
+    }
+    
     entregaPendenteId = null;
 }
 
+// 3. A lógica do botão de simulação
 function simularEnvioFoto() {
     const btnEnvia = document.getElementById('btn-envia');
-    const btnCancela = document.getElementById('btn-cancela');
     const barraArea = document.getElementById('progresso-area');
     const barra = document.getElementById('barra');
 
-    // Desativa botões e mostra barra
     btnEnvia.disabled = true;
     btnEnvia.innerText = "Enviando...";
     barraArea.classList.remove('hidden');
 
-    // Simula o carregamento da "foto"
     let progresso = 0;
     const intervalo = setInterval(() => {
-        progresso += 20;
+        progresso += 25; // Sobe de 25 em 25%
         barra.style.width = progresso + "%";
 
         if (progresso >= 100) {
             clearInterval(intervalo);
-            finalizarSimulacao();
+            
+            // ESSA PARTE RESOLVE O SEU PROBLEMA:
+            const index = entregas.findIndex(ent => ent.id === entregaPendenteId);
+            if (index !== -1) {
+                entregas[index].status = "Entregue";
+                entregas[index].foto = "fake-photo-placeholder"; 
+                
+                localStorage.setItem('planfeto_db', JSON.stringify(entregas));
+                
+                alert("Foto enviada com sucesso para o sistema Planfeto!");
+                
+                fecharModal(); // Fecha a janela preta
+                renderizarTabela(); // Atualiza a tabela para aparecer "Entregue"
+                atualizarDashboard(); // Atualiza os números do painel
+            }
         }
-    }, 400);
-}
-
-function finalizarSimulacao() {
-    const index = entregas.findIndex(ent => ent.id === entregaPendenteId);
-    if (index !== -1) {
-        entregas[index].status = "Entregue";
-        // Colocamos um ícone de foto fake só para preencher o campo
-        entregas[index].foto = "fake-photo-placeholder"; 
-        
-        localStorage.setItem('planfeto_db', JSON.stringify(entregas));
-        
-        alert("Foto enviada com sucesso para o sistema Planfeto!");
-        
-        // Reseta o modal para o estado original e fecha
-        document.getElementById('btn-envia').disabled = false;
-        document.getElementById('btn-envia').innerText = "Simular Envio de Foto 📸";
-        document.getElementById('progresso-area').classList.add('hidden');
-        document.getElementById('barra').style.width = "0%";
-        
-        fecharModal();
-        renderizarTabela();
-        atualizarDashboard();
-    }
+    }, 400); // Velocidade do carregamento
 }
 // 6. RENDERIZAÇÃO E DASHBOARD
 function atualizarDashboard() {
