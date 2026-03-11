@@ -15,6 +15,7 @@ function login() {
     if (usuario === "admin" && senha === "123") {
         document.getElementById('login').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
+        atualizarDashboard();
         showPage('dashboard');
     } else {
         alert("Acesso negado, senhor Marcelo.");
