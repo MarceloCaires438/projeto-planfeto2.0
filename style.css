@@ -1,26 +1,27 @@
 /* =========================================
-   RESET E CONFIGURAÇÕES GERAIS
+   CONFIGURAÇÕES GERAIS E RESET
    ========================================= */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 body {
-    background-color: #1f2933;
+    background: #1f2933;
     color: #e4e7eb;
-    overflow: hidden; /* Evita barras de rolagem desnecessárias no layout principal */
+    height: 100vh;
+    overflow: hidden; /* Impede a rolagem da página inteira */
 }
 
-/* Classe utilitária para esconder elementos */
+/* Classe para esconder elementos */
 .hidden {
     display: none !important;
 }
 
 /* =========================================
-   TELA DE LOGIN (OCUPA TELA TODA)
+   TELA DE LOGIN (SOLUÇÃO PARA O SEU PRINT)
    ========================================= */
 .login {
     position: fixed;
@@ -28,19 +29,18 @@ body {
     left: 0;
     width: 100%;
     height: 100vh;
-    background: #111827;
+    background: #111827; /* Fundo escuro sólido */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 9999; /* Garante que fica na frente do sistema */
 }
 
 .login h1 {
     font-size: 3rem;
     color: #3b82f6;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
+    margin-bottom: 25px;
 }
 
 .login input {
@@ -62,7 +62,6 @@ body {
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s;
 }
 
 .login button:hover {
@@ -70,7 +69,7 @@ body {
 }
 
 /* =========================================
-   ESTRUTURA DO APP (SIDEBAR + MAIN)
+   LAYOUT DO SISTEMA (APP)
    ========================================= */
 #app {
     display: flex;
@@ -80,7 +79,7 @@ body {
 
 /* MENU LATERAL */
 aside {
-    width: 260px;
+    width: 250px;
     background: #111827;
     padding: 30px 20px;
     display: flex;
@@ -90,8 +89,7 @@ aside {
 
 aside h2 {
     color: #3b82f6;
-    margin-bottom: 40px;
-    text-align: center;
+    margin-bottom: 30px;
     font-size: 1.5rem;
 }
 
@@ -99,13 +97,12 @@ aside button {
     background: transparent;
     border: none;
     color: #9ca3af;
-    padding: 12px 15px;
+    padding: 12px;
     text-align: left;
-    margin-bottom: 10px;
-    border-radius: 8px;
+    margin-bottom: 8px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
-    transition: all 0.2s;
 }
 
 aside button:hover {
@@ -113,21 +110,16 @@ aside button:hover {
     color: white;
 }
 
-/* ÁREA PRINCIPAL DE CONTEÚDO */
+/* ÁREA DE CONTEÚDO PRINCIPAL */
 main {
     flex: 1;
     padding: 40px;
-    overflow-y: auto; /* Permite rolar apenas o conteúdo se for longo */
+    overflow-y: auto; /* Rolagem apenas no conteúdo se necessário */
 }
 
-h2 {
-    margin-bottom: 30px;
-    font-size: 1.8rem;
-}
+/* TÍTULOS E CARDS */
+h2 { margin-bottom: 25px; font-size: 1.8rem; }
 
-/* =========================================
-   CARDS DA DASHBOARD
-   ========================================= */
 .cards {
     display: flex;
     gap: 20px;
@@ -136,47 +128,34 @@ h2 {
 
 .card {
     background: #111827;
-    padding: 25px;
+    padding: 30px;
     border-radius: 12px;
-    min-width: 200px;
     flex: 1;
+    min-width: 180px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     border: 1px solid #374151;
 }
 
 .card h3 {
     font-size: 2.5rem;
     color: #3b82f6;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
-.card p {
-    color: #9ca3af;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-}
-
-/* =========================================
-   FORMULÁRIOS E TABELAS
-   ========================================= */
+/* TABELAS E FORMULÁRIOS */
 input, select {
     background: #111827;
     border: 1px solid #374151;
-    padding: 12px;
-    border-radius: 6px;
+    padding: 10px;
+    border-radius: 5px;
     color: white;
-    margin-bottom: 15px;
-    display: block;
+    margin-bottom: 10px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    background: #111827;
-    border-radius: 8px;
-    overflow: hidden;
+    margin-top: 20px;
 }
 
 th, td {
@@ -185,16 +164,8 @@ th, td {
     border-bottom: 1px solid #374151;
 }
 
-th {
-    background: #1f2937;
-    color: #9ca3af;
-    font-size: 0.9rem;
-}
+th { background: #1f2937; }
 
-tr:hover {
-    background: #1f2937;
-}
-
-/* STATUS */
+/* CORES DE STATUS */
 .ok { color: #22c55e; font-weight: bold; }
 .pendente { color: #f59e0b; font-weight: bold; }
