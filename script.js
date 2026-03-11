@@ -1,87 +1,63 @@
-// Banco de dados em memória (inicia vazio)
+// 1. BANCO DE DADOS EM MEMÓRIA
 let entregas = [];
 
-// 1. FUNÇÃO DE LOGIN
+// 2. FUNÇÃO DE LOGIN
 function login() {
-    // Captura os valores dos inputs
     const usuario = document.getElementById('user').value;
     const senha = document.getElementById('pass').value;
 
-    // Verificação simples (usuário: admin / senha: 123)
     if (usuario === "admin" && senha === "123") {
-        
-        // A MÁGICA ACONTECE AQUI:
-        // Esconde a tela de login
         document.getElementById('login').classList.add('hidden');
-        
-        // Mostra a div do sistema
         document.getElementById('app').classList.remove('hidden');
-        
-        // Garante que a primeira página a aparecer seja o Dashboard
         showPage('dashboard');
-        
     } else {
-        alert("Usuário ou senha inválidos! Tente admin / 123");
+        alert("Acesso negado, senhor Marcelo. Verifique o usuário e senha.");
     }
 }
 
-// 2. FUNÇÃO DE NAVEGAÇÃO ENTRE ABAS
+// 3. NAVEGAÇÃO ENTRE ABAS
 function showPage(pageId) {
-    // Primeiro, selecionamos todas as seções de conteúdo
     const sections = document.querySelectorAll('main section');
-    
-    // Escondemos todas elas
-    sections.forEach(section => {
-        section.classList.add('hidden');
-    });
+    sections.forEach(s => s.classList.add('hidden'));
 
-    // Removemos o 'hidden' apenas da seção que queremos ver
-    const targetSection = document.getElementById(pageId);
-    if (targetSection) {
-        targetSection.classList.remove('hidden');
-    }
+    document.getElementById(pageId).classList.remove('hidden');
+
+    // Sempre que abrir Dashboard ou Lista, atualizamos os dados visuais
+    if (pageId === 'dashboard') atualizarDashboard();
+    if (pageId === 'lista') renderizarTabela();
 }
 
-// 3. FUNÇÃO DE LOGOUT (VOLTAR PARA O LOGIN)
-function logout() {
-    // Inverte o processo do login
-    document.getElementById('app').classList.add('hidden');
-    document.getElementById('login').classList.remove('hidden');
-    
-    // Limpa os campos de texto por segurança
-    document.getElementById('user').value = "";
-    document.getElementById('pass').value = "";
-}
-
-// 3. ADICIONAR NOVA ENTREGA
+// 4. CADASTRAR NOVA ENTREGA
 function addEntrega() {
     const cliente = document.getElementById('cliente').value;
     const endereco = document.getElementById('endereco').value;
     const status = document.getElementById('status').value;
 
     if (cliente === "" || endereco === "") {
-        alert("Por favor, preencha todos os campos.");
+        alert("Por favor, preencha todos os campos da entrega.");
         return;
     }
 
-    const novaEntrega = {
-        id: Date.now(),
+    // Criamos um objeto para a entrega
+    const nova = {
+        id: Date.now(), // Gera um ID único baseado no tempo
         cliente: cliente,
         endereco: endereco,
         status: status
     };
 
-    entregas.push(novaEntrega);
-    
-    // Limpa os campos
+    // Adiciona na lista
+    entregas.push(nova);
+
+    // Limpa os campos para o próximo cadastro
     document.getElementById('cliente').value = "";
     document.getElementById('endereco').value = "";
-    
-    alert("Entrega cadastrada com sucesso!");
-    showPage('lista'); // Redireciona para a lista
+
+    alert("Entrega de " + cliente + " registada!");
+    showPage('lista'); // Leva o usuário para ver a lista após cadastrar
 }
 
-// 4. ATUALIZAR DASHBOARD (CARDS)
+// 5. ATUALIZAR OS CARDS DO DASHBOARD
 function atualizarDashboard() {
     const total = entregas.length;
     const pendentes = entregas.filter(e => e.status === "Pendente").length;
@@ -92,45 +68,58 @@ function atualizarDashboard() {
     document.getElementById('entregues').innerText = entregues;
 }
 
-// 5. RENDERIZAR TABELA DE ENTREGAS
-function renderizarTabela(dadosParaExibir = entregas) {
-    const tabela = document.getElementById('tabela');
-    tabela.innerHTML = "";
+// 6. RENDERIZAR (DESENHAR) A TABELA
+function renderizarTabela() {
+    const corpoTabela = document.getElementById('tabela');
+    corpoTabela.innerHTML = ""; // Limpa a tabela antes de desenhar
 
-    dadosParaExibir.forEach((entrega, index) => {
-        const classeStatus = entrega.status.toLowerCase() === "entregue" ? "ok" : "pendente";
-        
-        tabela.innerHTML += `
+    entregas.forEach(entrega => {
+        // Define a cor do status baseado no texto
+        const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
+
+        corpoTabela.innerHTML += `
             <tr>
                 <td>${entrega.cliente}</td>
                 <td>${entrega.endereco}</td>
                 <td class="${classeStatus}">${entrega.status}</td>
                 <td>
-                    <button style="background: #ef4444; padding: 5px 10px;" onclick="removerEntrega(${entrega.id})">Excluir</button>
+                    <button style="background:#ef4444; padding:5px;" onclick="removerEntrega(${entrega.id})">Excluir</button>
                 </td>
             </tr>
         `;
     });
 }
 
-// 6. BUSCA FILTRADA
+// 7. BUSCA EM TEMPO REAL
 function buscar() {
     const termo = document.getElementById('busca').value.toLowerCase();
     const filtrados = entregas.filter(e => 
-        e.cliente.toLowerCase().includes(termo) || 
-        e.endereco.toLowerCase().includes(termo)
+        e.cliente.toLowerCase().includes(termo)
     );
-    renderizarTabela(filtrados);
+    
+    // Renderiza apenas os filtrados
+    const corpoTabela = document.getElementById('tabela');
+    corpoTabela.innerHTML = "";
+    filtrados.forEach(entrega => {
+        const classeStatus = entrega.status === "Entregue" ? "ok" : "pendente";
+        corpoTabela.innerHTML += `
+            <tr>
+                <td>${entrega.cliente}</td>
+                <td>${entrega.endereco}</td>
+                <td class="${classeStatus}">${entrega.status}</td>
+                <td><button onclick="removerEntrega(${entrega.id})">Excluir</button></td>
+            </tr>
+        `;
+    });
 }
 
-// 7. REMOVER ENTREGA
+// 8. REMOVER ENTREGA
 function removerEntrega(id) {
     entregas = entregas.filter(e => e.id !== id);
     renderizarTabela();
-    atualizarDashboard();
 }
 
-// 8. LOGOUT
+// 9. LOGOUT
 function logout() {
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login').classList.remove('hidden');
