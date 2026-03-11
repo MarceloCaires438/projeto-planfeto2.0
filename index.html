@@ -71,6 +71,20 @@
         </main>
     </div>
 
+    <div id="modalFoto" class="login hidden" style="background: rgba(0,0,0,0.8); z-index: 10000;">
+    <div style="background: #1f2937; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 400px;">
+        <h3>Comprovante de Entrega</h3>
+        <p style="margin: 15px 0; color: #9ca3af;">Tire uma foto do local ou canhoto:</p>
+        
+        <input type="file" id="fotoEntrega" accept="image/*" capture="environment" style="margin-bottom: 20px;">
+        
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="fecharModal()" style="background: #4b5563;">Cancelar</button>
+            <button onclick="confirmarEntregaComFoto()" style="background: #22c55e;">Finalizar Entrega</button>
+        </div>
+    </div>
+</div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
