@@ -81,6 +81,16 @@ function removerEntrega(id) {
     }
 }
 
+function marcarComoEntregue(id) {
+    const index = entregas.findIndex(e => e.id === id);
+    if (index !== -1) {
+        entregas[index].status = "Entregue";
+        salvarDados(); // Se estiver usando localStorage
+        renderizarTabela();
+        atualizarDashboard();
+    }
+}
+
 // 8. ATUALIZAR DASHBOARD
 function renderizarTabela() {
     const corpoTabela = document.getElementById('tabela');
