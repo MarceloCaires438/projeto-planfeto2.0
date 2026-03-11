@@ -1,183 +1,200 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Segoe UI, Arial;
+/* =========================================
+   RESET E CONFIGURAÇÕES GERAIS
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body{
-background:#1f2933;
-color:#e4e7eb;
-}
-/* Centraliza o Login e garante que ele ocupe a tela toda se não estiver escondido */
-.login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100%;
-    background: #111827; /* Fundo sólido para não ver o sistema atrás */
-    position: fixed;     /* Fixa na tela */
-    top: 0;
-    left: 0;
-    z-index: 999;        /* Garante que fica na frente de tudo */
+body {
+    background-color: #1f2933;
+    color: #e4e7eb;
+    overflow: hidden; /* Evita barras de rolagem desnecessárias no layout principal */
 }
 
-.login h1 {
-    margin-bottom: 20px;
-    font-size: 3rem;
-    color: #3b82f6;
-}
-
-/* APP LAYOUT */
-
-/* Ajuste no seletor do App */
-#app {
-    display: flex;       /* Mantém o Flexbox para o menu e main */
-    height: 100vh;
-    width: 100vw;
-}
-
-/* Garante que o hidden realmente suma com os elementos */
+/* Classe utilitária para esconder elementos */
 .hidden {
     display: none !important;
 }
 
+/* =========================================
+   TELA DE LOGIN (OCUPA TELA TODA)
+   ========================================= */
+.login {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #111827;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.login h1 {
+    font-size: 3rem;
+    color: #3b82f6;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+.login input {
+    width: 300px;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    background: #1f2937;
+    color: white;
+}
+
+.login button {
+    width: 300px;
+    padding: 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.login button:hover {
+    background: #2563eb;
+}
+
+/* =========================================
+   ESTRUTURA DO APP (SIDEBAR + MAIN)
+   ========================================= */
+#app {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
 /* MENU LATERAL */
-
-aside{
-width:230px;
-background:#111827;
-padding:25px;
-display:flex;
-flex-direction:column;
+aside {
+    width: 260px;
+    background: #111827;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #374151;
 }
 
-aside h2{
-margin-bottom:30px;
-font-size:22px;
+aside h2 {
+    color: #3b82f6;
+    margin-bottom: 40px;
+    text-align: center;
+    font-size: 1.5rem;
 }
 
-aside button{
-background:none;
-border:none;
-color:#9ca3af;
-text-align:left;
-padding:12px;
-margin-bottom:5px;
-cursor:pointer;
-border-radius:6px;
-font-size:15px;
+aside button {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    padding: 12px 15px;
+    text-align: left;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
 }
 
-aside button:hover{
-background:#374151;
-color:white;
+aside button:hover {
+    background: #1f2937;
+    color: white;
 }
 
-/* ÁREA PRINCIPAL */
-
-main{
-flex:1;
-padding:40px;
+/* ÁREA PRINCIPAL DE CONTEÚDO */
+main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto; /* Permite rolar apenas o conteúdo se for longo */
 }
 
-/* TITULOS */
-
-h2{
-margin-bottom:25px;
+h2 {
+    margin-bottom: 30px;
+    font-size: 1.8rem;
 }
 
-/* CARDS */
-
-.cards{
-display:flex;
-gap:25px;
+/* =========================================
+   CARDS DA DASHBOARD
+   ========================================= */
+.cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-.card{
-background:#111827;
-padding:25px;
-border-radius:10px;
-width:180px;
-box-shadow:0 5px 15px rgba(0,0,0,0.3);
-transition:0.2s;
+.card {
+    background: #111827;
+    padding: 25px;
+    border-radius: 12px;
+    min-width: 200px;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border: 1px solid #374151;
 }
 
-.card:hover{
-transform:translateY(-5px);
+.card h3 {
+    font-size: 2.5rem;
+    color: #3b82f6;
+    margin-bottom: 10px;
 }
 
-.card h3{
-font-size:30px;
-margin-bottom:10px;
+.card p {
+    color: #9ca3af;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
 }
 
-/* FORMULÁRIOS */
-
-input,select{
-width:260px;
-padding:10px;
-margin-bottom:12px;
-border:none;
-border-radius:6px;
-background:#374151;
-color:white;
+/* =========================================
+   FORMULÁRIOS E TABELAS
+   ========================================= */
+input, select {
+    background: #111827;
+    border: 1px solid #374151;
+    padding: 12px;
+    border-radius: 6px;
+    color: white;
+    margin-bottom: 15px;
+    display: block;
 }
 
-button{
-background:#3b82f6;
-border:none;
-padding:10px 20px;
-color:white;
-border-radius:6px;
-cursor:pointer;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #111827;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-button:hover{
-background:#2563eb;
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #374151;
 }
 
-/* TABELA */
-
-table{
-width:100%;
-border-collapse:collapse;
-background:#111827;
-border-radius:10px;
-overflow:hidden;
+th {
+    background: #1f2937;
+    color: #9ca3af;
+    font-size: 0.9rem;
 }
 
-th{
-background:#1f2937;
-padding:12px;
-text-align:left;
-}
-
-td{
-padding:12px;
-border-bottom:1px solid #374151;
-}
-
-tr:hover{
-background:#1f2937;
+tr:hover {
+    background: #1f2937;
 }
 
 /* STATUS */
-
-.ok{
-color:#22c55e;
-font-weight:bold;
-}
-
-.pendente{
-color:#f59e0b;
-font-weight:bold;
-}
-
-/* ESCONDER */
-
-.hidden{
-display:none;
-}
+.ok { color: #22c55e; font-weight: bold; }
+.pendente { color: #f59e0b; font-weight: bold; }
