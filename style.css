@@ -26,11 +26,12 @@ body {
 
 /* Estilo específico para a logo da tela de login */
 .logo-login {
-    width: 300px !important;  /* Força o tamanho para 300px */
-    max-width: 80vw !important; /* No celular, garante que não ultrapasse a tela */
-    height: auto !important;
     display: block !important;
-    margin: 0 auto 30px auto !important;
+    margin: 0 auto 20px auto !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    transform: scale(1.3); /* Isso vai aumentar o desenho em 30% além do tamanho original */
 }
 
 .logo-login:hover {
