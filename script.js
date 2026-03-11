@@ -171,7 +171,7 @@ function renderizarTabela() {
 // 7. FUNÇÕES AUXILIARES (IMAGEM E MAPA)
 function verFoto(foto) {
     if (foto === "fake-photo-placeholder") {
-        alert("Senhor Marcelo, esta é uma visualização demonstrativa. No sistema real, a foto capturada pelo funcionário apareceria aqui para o cliente conferir.");
+        alert("Esta é uma visualização demonstrativa. No sistema real, a foto capturada pelo funcionário aparecerá aqui para o cliente conferir.");
     } else {
         // Se for uma foto real (Base64), abre normal
         const win = window.open();
