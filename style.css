@@ -32,9 +32,16 @@ color:#e4e7eb;
 
 /* APP LAYOUT */
 
-#app{
-display:flex;
-height:100vh;
+/* Ajuste no seletor do App */
+#app {
+    display: flex;       /* Mantém o Flexbox para o menu e main */
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Garante que o hidden realmente suma com os elementos */
+.hidden {
+    display: none !important;
 }
 
 /* MENU LATERAL */
